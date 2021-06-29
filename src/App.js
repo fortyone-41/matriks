@@ -11,12 +11,17 @@ function App() {
     localStorage.count = count
     fetch('https://api.randomuser.me/?results=' + count).then(res => res.json()).then(data => {
       data.results.forEach(item => {
+        item.name = getName(item.name)
         item.gender = getGender(item.gender)
       })
       setState(data)
       localStorage.state = JSON.stringify(state.results)
     })
 
+  }
+
+  const getName = (name) => {
+    return name.title + " " + name.first + " " + name.last
   }
 
   const getGender = (gender) => {

@@ -5,6 +5,7 @@
     height: 100%;
 }
 
+
 .modal {
     position: fixed;
     top: 0;
@@ -91,4 +92,26 @@
     to {
       transform: translateY(0);
     }
+  }
+
+  .sb-search {
+    position: relative;
+  }
+
+  .sb-search-form {
+
+    max-height: 350px;
+    max-width: 350px;
+    background-color: white;
+    border: 1px solid black;
+    display: none;
+    position: absolute;
+    top:0;
+    left: 35px;
+  }
+
+  .checkBoxs {
+    max-height: 250px;
+    overflow: auto;
+    border: 1px solid #dbdbdb;
   }
