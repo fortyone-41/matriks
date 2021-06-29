@@ -1,0 +1,16 @@
+.main {
+  margin: auto;
+  width: 80%;
+  height: 100%;
+  background-image: linear-gradient(
+    to top,
+    rgb(250, 250, 249),
+    rgb(194, 194, 174)
+  );
+}
+@media (max-width: 768px) {
+  .main {
+    width: 100vw;
+    height: 100vh;
+  }
+}
