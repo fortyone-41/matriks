@@ -5,6 +5,13 @@
     height: 100%;
 }
 
+.table {
+  background-image: linear-gradient(
+    to top,
+    rgb(250, 250, 249),
+    rgb(194, 194, 174)
+  );
+}
 
 .modal {
     position: fixed;

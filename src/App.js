@@ -5,18 +5,32 @@ import Module from './module/Module';
 
 
 function App() {
-  const [state, setState] = React.useState({})
+
+  const [state, setState] = React.useState([])
+  const [page, setPage] = React.useState([])
+  const [pageNum, setPageNum] = React.useState(1)
   const countRef = React.useRef()
+
+  const calculatePage = (state) => {
+    setPage([])
+    for (let i = 1; i <= Math.ceil(state.length / 10); i++) {
+      setPage(prev => ([...prev.concat(i)]))
+    }
+  }
+
   const getState = (count) => {
     localStorage.count = count
-    fetch('https://api.randomuser.me/?results=' + count).then(res => res.json()).then(data => {
-      data.results.forEach(item => {
-        item.name = getName(item.name)
-        item.gender = getGender(item.gender)
+    fetch('https://api.randomuser.me/?results=' + count)
+      .then(res => { return res.json() })
+      .then(data => {
+        data.results.forEach(item => {
+          item.name = getName(item.name)
+          item.gender = getGender(item.gender)
+        })
+        localStorage.state = JSON.stringify(data.results)
+        calculatePage(data.results)
+        setState(data.results)
       })
-      setState(data)
-      localStorage.state = JSON.stringify(state.results)
-    })
 
   }
 
@@ -32,22 +46,40 @@ function App() {
       case "male": {
         return "Мужской"
       }
+      default: break
     }
   }
 
   React.useEffect(() => {
     getState(localStorage.count || 1)
-    if (countRef.current && localStorage.count) countRef.current.value = localStorage.count
+    if (countRef.current && localStorage.count)
+      countRef.current.value = localStorage.count
   }, [])
+
 
   return (
     <div className="main">
-      <div class="input-group mb-3">
-        <span class="input-group-text" id="basic-addon1">Пользователи</span>
-        <input type="text" class="form-control" placeholder="Введите количество пользователей" ref={countRef} onChange={() => getState(countRef.current.value)} aria-label="Users" aria-describedby="basic-addon1" />
-        <button class="btn btn-outline-dark" type="button" id="button-addon2">Фильтр</button>
+      <div className="input-group mb-3">
+        <span className="input-group-text" id="basic-addon1">Пользователи</span>
+        <input
+          type="number"
+          className="form-control"
+          placeholder="Введите количество пользователей"
+          ref={countRef} onChange={() => getState(countRef.current.value)}
+          aria-label="Users"
+          aria-describedby="basic-addon1" />
+        <span className="input-group-text">Текущая страница: {pageNum}</span>
       </div>
-      {state ? <Module state={state} setState={setState} /> : null}
+      {state ?
+        <Module
+          page={page}
+          calculatePage={calculatePage}
+          state={state}
+          setState={setState}
+          pageNum={pageNum}
+          setPageNum={setPageNum}
+        />
+        : null}
     </div>
   );
 }
