@@ -47,7 +47,7 @@ const Modal = ({
     )
 }
 
-const Module = ({ state, setState, page, calculatePage, pageNum, setPageNum }) => {
+const Module = ({ state, setState, page, calculatePage, pageNum, setPageNum, setCountOnPage, countOnPage }) => {
     const [content, setContent] = React.useState()
     const [actualData, setActualData] = React.useState()
     const [nameVis, setNameVis] = React.useState('none')
@@ -219,7 +219,9 @@ const Module = ({ state, setState, page, calculatePage, pageNum, setPageNum }) =
         setEmailVis('none')
     }, [state])
 
-
+    React.useEffect(() => {
+        calculatePage(state);
+    }, [countOnPage])
 
     return (
         <div className="module">
@@ -246,7 +248,7 @@ const Module = ({ state, setState, page, calculatePage, pageNum, setPageNum }) =
                 <tbody>
                     {
                         state.map((person, index) => {
-                            if (index >= (pageNum || 1) * 10 - 10 && index < (pageNum || 1) * 10)
+                            if (index >= (pageNum || 1) * countOnPage - countOnPage && index < (pageNum || 1) * countOnPage)
                                 return (<tr key={index}>
                                     <td>{person.name}</td>
                                     <td>{person.gender}</td>
@@ -279,6 +281,15 @@ const Module = ({ state, setState, page, calculatePage, pageNum, setPageNum }) =
                         </li>
                     ))}
                 </ul>
+                <div className="input-group mb-3" style={{ position: "absolute", left: "0px", width: "25%" }}>
+                    <span className="input-group-text" id="basic-addon1">Количество записей:</span>
+                    <select className="form-control" onChange={(e) => {setCountOnPage(Number(e.target.value)); setPageNum(1);  setState(prev=>([...prev]));}}>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
             </nav>
 
             <Modal
