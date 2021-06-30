@@ -9,14 +9,14 @@ function App() {
   const [state, setState] = React.useState([])
   const [page, setPage] = React.useState([])
   const [pageNum, setPageNum] = React.useState(1)
-  const [countOnPage, setCountOnPage] = React.useState()
+  const [countOnPage, setCountOnPage] = React.useState(10)
   const countRef = React.useRef()
   
 
   
   const calculatePage = (state) => {
     setPage([])
-    for (let i = 1; i <= Math.ceil(state.length / (countOnPage || 10)); i++) {
+    for (let i = 1; i <= Math.ceil(state.length / countOnPage); i++) {
       setPage(prev => ([...prev.concat(i)]))
     }
   }

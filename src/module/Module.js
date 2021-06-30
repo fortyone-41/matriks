@@ -96,7 +96,6 @@ const Module = ({ state, setState, page, calculatePage, pageNum, setPageNum, set
                             else {
                                 this.array(prev => ([...prev.concat(item)]))
                             }
-                            console.log(e.target)
                             return this.array
                         }
                         } />
@@ -123,7 +122,7 @@ const Module = ({ state, setState, page, calculatePage, pageNum, setPageNum, set
                         }}
                         className="btn btn-secondary btn-sm"
                     >
-                        <img src={filterImg} style={{}} width="" height="15px" />
+                        <img src={filterImg} height="15px" />
                     </button>
 
                     <div id={"sb-search" + this.col} className="sb-search">
