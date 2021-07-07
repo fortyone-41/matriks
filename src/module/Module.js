@@ -68,6 +68,13 @@ const Module = ({ state, setState, page, calculatePage, pageNum, setPageNum, set
             this.array = array
         }
 
+        writeToObj(item, obj, text, num, divider = " ") {
+            if (item.split(divider)[num]
+                .toLowerCase()
+                .includes(text.toLowerCase()))
+                return obj[item.split(divider)[num]] = false
+        }
+
         filterTable(col, text = '') {
             this.obj = {}
             state = JSON.parse(localStorage.state).sort(function (a, b) {
@@ -80,10 +87,22 @@ const Module = ({ state, setState, page, calculatePage, pageNum, setPageNum, set
                 return 0;
             });
             for (let item of state) {
-                if (item[col]
-                    .toLowerCase()
-                    .includes(text.toLowerCase()))
-                    this.obj[item[col]] = false
+                switch (col) {
+                    case 'name': {
+                        this.writeToObj(item[col], this.obj, text, "0")
+                        break
+                    }
+                    case 'gender': {
+                        this.writeToObj(item[col], this.obj, text, "0")
+                        break
+                    }
+                    case 'email': {
+                        this.writeToObj(item[col], this.obj, text, "1", "@")
+                        break
+                    }
+                    default: break
+                }
+
             }
             setContent(Object.keys(this.obj).map(item => (
                 <div>
@@ -96,6 +115,7 @@ const Module = ({ state, setState, page, calculatePage, pageNum, setPageNum, set
                             else {
                                 this.array(prev => ([...prev.concat(item)]))
                             }
+
                             return this.array
                         }
                         } />
@@ -272,17 +292,52 @@ const Module = ({ state, setState, page, calculatePage, pageNum, setPageNum, set
 
             <nav aria-label="..." style={{ position: "relative", marginBottom: "60px" }}>
                 <ul className="pagination pagination-sm" style={{ position: "absolute", left: "50%", right: "50%", zIndex: "-1" }}>
-                    {page.map(i => (
-                        <li key={i} id={"page" + i}
-                            className={i === pageNum ? "page-item active" : "page-item"}
-                            onClick={() => { setPageNum(i); }}>
-                            <a className="page-link" href="#">{i}</a>
-                        </li>
-                    ))}
+                    {page.map(i => {
+                        if (i === 1) return (
+                            <>
+                                <li key={i} id={"page" + i}
+                                    className={i === pageNum ? "page-item active" : "page-item"}
+                                    onClick={() => { setPageNum(i); }}>
+                                    <a className="page-link" href="#">{i}</a>
+                                </li>
+                                {i + 2 >= pageNum ? null : (<li key="..."
+                                    className="page-item"
+                                    onClick={() => { setPageNum(pageNum - 3); }}
+                                >
+                                    <a className="page-link" style={{ cursor: "pointer" }}> ...</a>
+                                </li>)}
+                            </>
+                        )
+                        if (i === page.length) return (
+                            <>
+                                {i - 2 <= pageNum ? null : (<li key="..."
+                                    className="page-item"
+                                    onClick={() => { setPageNum(pageNum + 3); }}
+                                >
+                                    <a className="page-link" style={{ cursor: "pointer" }}> ...</a>
+                                </li>)}
+
+                                <li key={i} id={"page" + i}
+                                    className={i === pageNum ? "page-item active" : "page-item"}
+                                    onClick={() => { setPageNum(i); }}>
+                                    <a className="page-link" href="#">{i}</a>
+                                </li>
+                            </>
+                        )
+                        if ((i + 2 < pageNum) || (i - 2 > pageNum)) return null
+
+                        return (
+                            <li key={i} id={"page" + i}
+                                className={i === pageNum ? "page-item active" : "page-item"}
+                                onClick={() => { setPageNum(i); }}>
+                                <a className="page-link" href="#">{i}</a>
+                            </li>
+                        )
+                    })}
                 </ul>
                 <div className="input-group mb-3" style={{ position: "absolute", left: "0px", width: "25%" }}>
                     <span className="input-group-text" id="basic-addon1">Количество записей:</span>
-                    <select className="form-control" onChange={(e) => {setCountOnPage(Number(e.target.value)); setPageNum(1);  setState(prev=>([...prev]));}}>
+                    <select className="form-control" onChange={(e) => { setCountOnPage(Number(e.target.value)); setPageNum(1); setState(prev => ([...prev])); }}>
                         <option value="10">10</option>
                         <option value="20">20</option>
                         <option value="50">50</option>
